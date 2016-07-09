@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Project</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+</head>
+<body>
+	<div class="jumbotron">
+	<p>Привет, чуваки</p>
+	</div>
+
+	<form action="{% url "rotns" %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" name="codify" value="Codify" />
+    <input type="submit" name="uncodify" value="Uncodify" />
+</form>
+
+
+	<script type="text/javascript" src=""></script>
+</body>
+</html>

@@ -12,28 +12,27 @@ def index(request):
 		if form.is_valid():
 			input = form.cleaned_data['input']
 			number = form.cleaned_data['number']
-		if 'codify' in request.POST and form.is_valid:
-			result = rot(input, number)
-		elif 'uncodify' in request.POST and form.is_valid:
-			result = rot(input, number, False)
-		return render(request, 'index.html', {"form": form, "result": result})
+			if 'codify' in request.POST and form.is_valid:
+				result = rot(input, number)
+			elif 'uncodify' in request.POST and form.is_valid:
+				result = rot(input, number, False)
+			return render(request, 'index.html', {"form": form, "result": result})
 	else:
 		form = RotnForm()	
 	return render(request, 'index.html', {"form": form})
 
+# codify/uncodify word
 def rot(str, num, codify=True):
-	#to_num = None
-	# to_char = ''
 	result = ""
 	for s in str:
-		if ord(s) is not 32:
+		if ord(s) is not 32: # verification on blank symbol
 			s = transform_char(s, num, codify=codify)
 			result += s
 		else:
 			result += " "
 	return result	
 
-
+# codify/uncodify one character
 def transform_char(char, num, codify=True):
 	result = None
 	result_char = None

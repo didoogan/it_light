@@ -25,4 +25,4 @@ def transfortm_char(char, num, codify=True):
 	return chr(result_char)	
 
 
-print(transfortm_char('Z', 1))
+print(transfortm_char('D', 5))

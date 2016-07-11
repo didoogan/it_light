@@ -1,50 +1,48 @@
 from django.shortcuts import render
 from django import forms
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 class RotnForm(forms.Form):
-	input = forms.CharField(widget=forms.Textarea)
-	number = forms.IntegerField(required=True)
+	input = forms.CharField(widget=forms.Textarea(attrs={
+		'id': 'post-text',
+		'placeholder': 'Input text',
+	}))
+	num = forms.IntegerField(initial=777)
+	output = forms.CharField(widget=forms.Textarea(attrs={'id': 'result-text', 'disabled': True}))
 
+	
 def index(request):
 	if request.method == 'POST':
-		form = RotnForm(request.POST)
-		if form.is_valid():
-			input = form.cleaned_data['input']
-			number = form.cleaned_data['number']
-			if 'codify' in request.POST and form.is_valid:
-				result = rot(input, number)
-			elif 'uncodify' in request.POST and form.is_valid:
-				result = rot(input, number, False)
-			return render(request, 'index.html', {"form": form, "result": result})
+		json = {}
+		input, json['input'] = (request.POST.get('the_post'),) *2
+		number,json['number'] = (int(request.POST.get('the_number')),) *2
+		codify, json['codify'] = (request.POST.get('codify'),) *2
+		json['result'] = rot(input, number, codify)
+		return JsonResponse(json)
 	else:
-		form = RotnForm()	
-	return render(request, 'index.html', {"form": form})
+		form = RotnForm()
+		return render(request, 'index.html', {"form": form})
 
-# codify/uncodify word
-def rot(str, num, codify=True):
+def rot(str, num, codify):
 	result = ""
 	for s in str:
 		if ord(s) is not 32: # verification on blank symbol
-			s = transform_char(s, num, codify=codify)
+			s = transform_char(s, num, codify)
 			result += s
 		else:
 			result += " "
 	return result	
 
 # codify/uncodify one character
-def transform_char(char, num, codify=True):
-	result = None
-	result_char = None
+def transform_char(char, num, codify):
 	char_to_int = ord(char)
-	# codify 
-	if codify:
-		num %= 26
-	else:
+	# codify
+	num %= 26 
+	if codify == 'True':
+		result_char = char_to_int + num	
 	# uncodify	
-		num %= 26
-		num *= -1
-	result_char = char_to_int + num	
+	else:
+		result_char = char_to_int - num	
 	# lower case 
 	if char_to_int > 96 and char_to_int < 123:
 		if  result_char > 122:
@@ -58,5 +56,4 @@ def transform_char(char, num, codify=True):
 		if result_char < 65:
 			result_char = 91 - (65 - result_char)	
 	return chr(result_char)	
-
 

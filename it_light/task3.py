@@ -1,14 +1,25 @@
-def transfortm_char(char, num, codify=True):
-	result = None
-	result_char = None
+def rot(str, num, codify):
+	result = ""
+	for s in str:
+		if ord(s) is not 32: # verification on blank symbol
+			s = transform_char(s, num, codify)
+			result += s
+		else:
+			result += " "
+	return result	
+
+# codify/uncodify one character
+def transform_char(char, num, codify):
 	char_to_int = ord(char)
-	# codify 
+	# codify
+	num %= 26 
 	if codify:
-		num %= 26
-	else:
+		print("Codify = True")
+		result_char = char_to_int + num	
 	# uncodify	
-		num %= 26
-		num *= -1
+	else:
+		print("Codify = False")
+		result_char = char_to_int - num	
 	result_char = char_to_int + num	
 	# lower case 
 	if char_to_int > 96 and char_to_int < 123:
@@ -25,4 +36,6 @@ def transfortm_char(char, num, codify=True):
 	return chr(result_char)	
 
 
-print(transfortm_char('D', 5))
+string = "z"
+codify = False
+print(rot(string, -1, codify))

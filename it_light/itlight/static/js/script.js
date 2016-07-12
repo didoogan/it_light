@@ -9,10 +9,23 @@ $('.but').click(function() {
       }
 }); 
 
-// permit default behavor and pass control to Ajax script
+// prevent default behavior and pass control to Ajax script
 $('#post-form').on('submit', function(event){
-    create_post();
-    event.preventDefault();
+	event.preventDefault();
+	var regex = /^[a-zA-Z\s]+$/;
+	if (regex.test($('#post-text').val())) {
+		$('#post-text').attr('placeholder', 'Input text');
+		$('#chart').attr("hidden", false); 
+	    create_post();
+	} else {
+		$('#post-text').attr("placeholder", "You should input only letters and spaces");
+		$('#post-text').val('');
+		$('#result-text').val('');
+		$('#chart').attr("hidden", true); 
+	}
+	// event.preventDefault();
+	// create_post();
+    
 });
 
 // Ajax handling
@@ -30,12 +43,15 @@ function create_post(data) {
 		success: function(json) {
 			console.log(json);
 			$('#post-text').val('');
-			$('#result-text').val(json.result); 
+			$('#result-text').val(json.result);
+			var json = json.chart
+			google.charts.setOnLoadCallback(drawChart(json));
 		} ,
 
 		// handle a non-successful response
 		error: function(xhr, errmsg, err) {
 			console.log(xhr.status + ": " + xhr.responseText);
+			$('#chart').val('');
 		}
 
 	});

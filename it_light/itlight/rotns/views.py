@@ -6,9 +6,9 @@ class RotnForm(forms.Form):
 	input = forms.CharField(widget=forms.Textarea(attrs={
 		'id': 'post-text',
 		'placeholder': 'Input text',
-	}))
+	}), label='')
 	num = forms.IntegerField(initial=777)
-	output = forms.CharField(widget=forms.Textarea(attrs={'id': 'result-text', 'disabled': True}))
+	output = forms.CharField(widget=forms.Textarea(attrs={'id': 'result-text', 'disabled': True}), label='')
 
 	
 def index(request):
@@ -18,6 +18,7 @@ def index(request):
 		number,json['number'] = (int(request.POST.get('the_number')),) *2
 		codify, json['codify'] = (request.POST.get('codify'),) *2
 		json['result'] = rot(input, number, codify)
+		json['chart'] = frequency_of_chars(input)
 		return JsonResponse(json)
 	else:
 		form = RotnForm()
@@ -56,4 +57,15 @@ def transform_char(char, num, codify):
 		if result_char < 65:
 			result_char = 91 - (65 - result_char)	
 	return chr(result_char)	
+
+def frequency_of_chars(str):
+	result = {}
+	for s in str:
+		if s == " ":
+			continue
+		if s in result:
+			result[s] = result[s] + 1
+		else:	
+			result[s] = 1
+	return result	
 

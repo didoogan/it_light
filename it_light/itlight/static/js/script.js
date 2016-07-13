@@ -7,30 +7,12 @@ $('.but').click(function() {
       } else {
       	buttonpressed = "False";
       }
-      // event.preventDefault();
 }); 
 
-// prevent default behavior and pass control to Ajax script
-// $('#post-form').on('submit', function(event){
-// 	event.preventDefault();
-// 	var regex = /^[a-zA-Z\s]+$/;
-// 	if (regex.test($('#post-text').val())) {
-// 		$('#post-text').attr('placeholder', 'Input text');
-// 		$('#chart').attr("hidden", false); 
-// 	    create_post();
-// 	} else {
-// 		$('#post-text').attr("placeholder", "You should input only letters and spaces");
-// 		$('#post-text').val('');
-// 		$('#result-text').val('');
-// 		$('#chart').attr("hidden", true); 
-// 	}
-// 	// event.preventDefault();
-// 	// create_post();
-    
-// });
-
+// button event
 $('#post-form').on('submit', myCallBack);
 
+// delaing for keyup event
 var delay = (function(){
   var timer = 0;
   return function(callback, ms){
@@ -39,6 +21,7 @@ var delay = (function(){
   };
 })();
 
+// keyup event
 $('#post-form').keyup(function() {
 	delay(function() {
 		myCallBack(event, false);
@@ -61,8 +44,7 @@ function myCallBack(event, param=true){
 		$('#result-text').val('');
 		$('#chart').attr("hidden", true); 
 	}
-	// event.preventDefault();
-	// create_post();
+	
     
 }
 

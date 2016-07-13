@@ -1,7 +1,7 @@
 import os
 from django.shortcuts import render
 from django import forms
-from django.http import HttpResponse, JsonResponse
+from django.http import  JsonResponse
 
 
 
@@ -10,7 +10,7 @@ class RotnForm(forms.Form):
 		'id': 'post-text',
 		'placeholder': 'Input text',
 	}), label='')
-	num = forms.IntegerField(initial=777)
+	num = forms.IntegerField(initial=777, label="Steps")
 	output = forms.CharField(widget=forms.Textarea(attrs={'id': 'result-text', 'disabled': True}), label='')
 
 	
@@ -32,15 +32,17 @@ def index(request):
 def rot(str, num, codify):
 	result = ""
 	for s in str:
-		if ord(s) is not 32: # verification on blank symbol
+		if ord(s) is not 32: # verification on a blank symbol
 			s = transform_char(s, num, codify)
 			result += s
 		else:
 			result += " "
 	return result	
 
-# codify/uncodify one character
 def transform_char(char, num, codify):
+	'''
+	codify/uncodify one character
+	'''
 	char_to_int = ord(char)
 	# codify
 	num %= 26 
@@ -64,28 +66,40 @@ def transform_char(char, num, codify):
 	return chr(result_char)	
 
 def frequency_of_chars(str):
+	'''
+	return a dictionary whith keys as chars of string
+	and values as frecuency of this chars
+	'''
 	result = {}
 	for s in str:
+		# blank char don't conunt
 		if s == " ":
 			continue
 		if s in result:
 			result[s] = result[s] + 1
 		else:	
 			result[s] = 1
-	return result	
+	return result
 
-def is_english_word(str):
+def connect_to_vocabulary():
+	'''
+	connect to file, which contain most of english words
+	'''
 	module_dir = os.path.dirname(__file__)  # get current directory
 	file_path = os.path.join(module_dir, 'words.txt')
-	# file = static("../static/css/bootstrap.css")
 	with open(file_path) as word_file:
-		english_words = set(word.strip().lower() for word in word_file)
+		english_words = set(word.strip().lower() for word in word_file)	
+	return english_words	
+
+def is_english_word(str):
+	english_words = connect_to_vocabulary() 
 	arr = str.strip().split(' ')
+	# check ever posible variant of rot function
 	for i in range(0,26):
 		for string in arr:
 			if rot(string.lower(), i, True) in english_words:
 				return "For uncodifying string, you should take {} steps and press 'codify'".format(26-i)
-	return 'No suggest'	
+	return 'No suggestion'	
 
 
 

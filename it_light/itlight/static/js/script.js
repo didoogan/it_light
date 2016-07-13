@@ -7,14 +7,52 @@ $('.but').click(function() {
       } else {
       	buttonpressed = "False";
       }
+      // event.preventDefault();
 }); 
 
 // prevent default behavior and pass control to Ajax script
-$('#post-form').on('submit', function(event){
-	event.preventDefault();
+// $('#post-form').on('submit', function(event){
+// 	event.preventDefault();
+// 	var regex = /^[a-zA-Z\s]+$/;
+// 	if (regex.test($('#post-text').val())) {
+// 		$('#post-text').attr('placeholder', 'Input text');
+// 		$('#chart').attr("hidden", false); 
+// 	    create_post();
+// 	} else {
+// 		$('#post-text').attr("placeholder", "You should input only letters and spaces");
+// 		$('#post-text').val('');
+// 		$('#result-text').val('');
+// 		$('#chart').attr("hidden", true); 
+// 	}
+// 	// event.preventDefault();
+// 	// create_post();
+    
+// });
+
+$('#post-form').on('submit', myCallBack);
+
+var delay = (function(){
+  var timer = 0;
+  return function(callback, ms){
+    clearTimeout (timer);
+    timer = setTimeout(callback, ms);
+  };
+})();
+
+$('#post-form').keyup(function() {
+	delay(function() {
+		myCallBack(event, false);
+	}, 1000);
+});	
+
+function myCallBack(event, param=true){
+	if(param) {
+		event.preventDefault();
+	}
+	// event.preventDefault();
 	var regex = /^[a-zA-Z\s]+$/;
 	if (regex.test($('#post-text').val())) {
-		$('#post-text').attr('placeholder', 'Input text');
+		// $('#post-text').attr('placeholder', 'Input text');
 		$('#chart').attr("hidden", false); 
 	    create_post();
 	} else {
@@ -26,7 +64,7 @@ $('#post-form').on('submit', function(event){
 	// event.preventDefault();
 	// create_post();
     
-});
+}
 
 // Ajax handling
 function create_post(data) {
@@ -42,10 +80,14 @@ function create_post(data) {
 		// handle a successful response
 		success: function(json) {
 			console.log(json);
-			$('#post-text').val('');
+			// $('#post-text').val('');
 			$('#result-text').val(json.result);
-			var json = json.chart
-			google.charts.setOnLoadCallback(drawChart(json));
+			var text = json.suggest;
+			$("p").html(text)
+			console.log(text);
+			var data = json.chart;
+			google.charts.setOnLoadCallback(drawChart(data));
+			
 		} ,
 
 		// handle a non-successful response

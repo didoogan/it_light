@@ -2,7 +2,6 @@ google.charts.load('current', {packages: ['corechart']});
 
 function drawChart(json) {
   // var json = {'a': 3, 'b':2, 'c': 3, 'd': 18};
-  console.log(json);
   // Define the chart to be drawn.
   var data = new google.visualization.DataTable();
   data.addColumn('string', 'Char');

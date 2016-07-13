@@ -1,6 +1,9 @@
+import os
 from django.shortcuts import render
 from django import forms
 from django.http import HttpResponse, JsonResponse
+
+
 
 class RotnForm(forms.Form):
 	input = forms.CharField(widget=forms.Textarea(attrs={
@@ -19,6 +22,8 @@ def index(request):
 		codify, json['codify'] = (request.POST.get('codify'),) *2
 		json['result'] = rot(input, number, codify)
 		json['chart'] = frequency_of_chars(input)
+		json['suggest'] = is_english_word(input)
+		print is_english_word(input)
 		return JsonResponse(json)
 	else:
 		form = RotnForm()
@@ -68,4 +73,19 @@ def frequency_of_chars(str):
 		else:	
 			result[s] = 1
 	return result	
+
+def is_english_word(str):
+	module_dir = os.path.dirname(__file__)  # get current directory
+	file_path = os.path.join(module_dir, 'words.txt')
+	# file = static("../static/css/bootstrap.css")
+	with open(file_path) as word_file:
+		english_words = set(word.strip().lower() for word in word_file)
+	arr = str.strip().split(' ')
+	for i in range(0,26):
+		for string in arr:
+			if rot(string.lower(), i, True) in english_words:
+				return "For uncodifying string, you should take {} steps and press 'codify'".format(26-i)
+	return 'No suggest'	
+
+
 
